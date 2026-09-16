@@ -1,5 +1,6 @@
 package com.example.compose
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Layout
 import androidx.activity.ComponentActivity
@@ -24,8 +25,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.modifier.modifierLocalOf
@@ -35,54 +34,83 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.ui.theme.ComposeTheme
 import java.util.function.ObjIntConsumer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
         setContent {
-            hello()
+            Activity1(
+                onButtonClick = { text ->
+                    val intent = Intent(this, SecondActivity::class.java)
+
+                    intent.putExtra("pesan", text)
+
+                    startActivity(intent)
+                }
+            )
         }
     }
 }
-
-@Preview
 @Composable
-fun hello () {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+fun Activity1(
+    onButtonClick: (String) -> Unit
+) {
+
+    var text by remember {
+        mutableStateOf("")
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+
+        horizontalAlignment = Alignment.CenterHorizontally,
+
+        verticalArrangement = Arrangement.Center
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .offset(y = (-200).dp)
-                .padding(horizontal = 24.dp)
+
+        Text(
+            text = "Nama : Prasetya Hafidz Ramadhan"
         )
-        {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(horizontal = 24.dp),
-            ) {
-                Box(contentAlignment = Alignment.TopEnd) {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = "Profil",
-                        modifier = Modifier
-                            .size(60.dp)
-                            .clip(CircleShape)
-                            .background(Color.Cyan)
-                    )
-                }
-                Spacer(modifier = Modifier.width(16.dp))
-                Column {
-                    Text(
-                        text = "Nama : Prasetya Hafidz Ramadhan",
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(text = "NIM : 245150407111053")
-                }
-            }
+
+        Text(
+            text = "NIM : 245150407111053"
+        )
+
+        OutlinedTextField(
+            value = text,
+
+            onValueChange = {
+                text = it
+            },
+
+            label = {
+                Text("Masukkan Text")
+            },
+
+            modifier = Modifier.padding(top = 20.dp)
+        )
+
+        Button(
+            onClick = {
+                onButtonClick(text)
+            },
+
+            modifier = Modifier.padding(top = 16.dp)
+        ) {
+            Text("Kirim")
         }
     }
 }
