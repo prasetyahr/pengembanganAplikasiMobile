@@ -3,73 +3,132 @@ package com.example.compose
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.compose.ui.theme.ComposeTheme
+
+data class ItemList(
+    val nama: String,
+    val deskripsi: String,
+    val gambar: Int
+)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            MainScreen()
+            ComposeTheme {
+                HalamanLazyList()
+            }
         }
     }
 }
 
 @Composable
-fun MainScreen() {
+fun HalamanLazyList() {
 
-    var screen by remember {
-        mutableStateOf(1)
-    }
+    val daftarItem = listOf(
+        ItemList(
+            nama = "Minuman",
+            deskripsi = "Menu Minuman Menyegarkan",
+            gambar = R.drawable.gambar_1
+        ),
+        ItemList(
+            nama = "Paket",
+            deskripsi = "Menu Paket Murah",
+            gambar = R.drawable.gambar_2
+        ),
+        ItemList(
+            nama = "Burger",
+            deskripsi = "Burger Bangor",
+            gambar = R.drawable.gambar_3
+        )
+    )
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .padding(16.dp)
     ) {
 
-        // Nama dan NIM ditampilkan di semua screen
-        Text(text = "Nama : Prasetya Hafidz Ramadhan")
-        Text(text = "NIM : 245150407111053")
+        // Identitas mahasiswa di atas LazyList
+        Text(
+            text = "Nama: Prasetya Hafidz Ramadhan",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold
+        )
 
-        // Isi screen
-        if (screen == 1) {
+        Text(
+            text = "NIM: 245150407111053",
+            style = MaterialTheme.typography.bodyLarge
+        )
 
-            Text(
-                text = "Screen 1",
-                modifier = Modifier.padding(top = 24.dp)
-            )
+        Spacer(modifier = Modifier.height(16.dp))
 
-            Button(
-                onClick = {
-                    screen = 2
-                },
-                modifier = Modifier.padding(top = 16.dp)
-            ) {
-                Text(text = "Ke Halaman 2")
+        // LazyList
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(daftarItem) { item ->
+
+                Card(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+
+                        // Gambar lokal dari drawable
+                        Image(
+                            painter = painterResource(
+                                id = item.gambar
+                            ),
+                            contentDescription = item.nama,
+                            modifier = Modifier.size(100.dp)
+                        )
+
+                        Column(
+                            modifier = Modifier.padding(start = 16.dp)
+                        ) {
+                            Text(
+                                text = item.nama,
+                                fontWeight = FontWeight.Bold
+                            )
+
+                            Spacer(
+                                modifier = Modifier.height(4.dp)
+                            )
+
+                            Text(
+                                text = item.deskripsi
+                            )
+                        }
+                    }
+                }
             }
-
-        } else {
-
-            Text(
-                text = "Screen 2",
-                modifier = Modifier.padding(top = 24.dp)
-            )
         }
     }
 }
